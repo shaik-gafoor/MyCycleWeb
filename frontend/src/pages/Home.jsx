@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import CycleCard from "../components/CycleCard";
 import Footer from "../components/Footer";
-import cyclesData from "../cyclesData";
+import { useCycles } from "../hooks/useCycles";
 import homecycle from "../assets/homecycle.webp";
 
 function Home() {
   const navigate = useNavigate();
+  const { cycles, loading, error } = useCycles();
 
   const handleViewCycles = () => {
     navigate("/cycles");
@@ -31,9 +32,24 @@ function Home() {
       </section>
 
       <div className="cycle-list">
-        {cyclesData.map((cycle) => (
-          <CycleCard key={cycle.id} cycle={cycle} />
-        ))}
+        {loading ? (
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Loading cycles...</p>
+          </div>
+        ) : error ? (
+          <div className="error-message">
+            <p>Failed to load cycles: {error}</p>
+          </div>
+        ) : cycles.length > 0 ? (
+          cycles
+            .slice(0, 8)
+            .map((cycle) => <CycleCard key={cycle.id} cycle={cycle} />)
+        ) : (
+          <div className="empty-state">
+            <p>No cycles available at the moment.</p>
+          </div>
+        )}
       </div>
 
       <Footer />
