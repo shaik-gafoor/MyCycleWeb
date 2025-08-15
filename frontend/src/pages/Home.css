@@ -1,10 +1,20 @@
 .home {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  transition: all 0.3s ease;
+}
+
+/* Light Mode */
+body.light-mode .home {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Dark Mode */
+body.dark-mode .home {
+  background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
 }
 
 /* HERO SECTION */
@@ -129,13 +139,18 @@
 }
 
 .cycle-card-image-container::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.1) 0%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 1;
@@ -172,9 +187,6 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-  color: #333;
-  margin-bottom: 1rem;
-}
 
 .cycle-card-actions {
   display: flex;
@@ -209,63 +221,6 @@
 .btn-danger:hover {
   background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
   transform: translateY(-2px);
-}
-
-/* ADD CYCLE FORM */
-.add-cycle-form {
-  background: #fff;
-  padding: 2.5rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  margin: 2rem;
-  max-width: 600px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  border: 1px solid #e9ecef;
-}
-
-.add-cycle-form h2 {
-  text-align: center;
-  color: #1a1a1a;
-  margin-bottom: 1rem;
-  font-size: 2.2rem;
-  font-weight: 700;
-}
-
-.add-cycle-form input {
-  padding: 1rem;
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  background: #f8f9fa;
-}
-
-.add-cycle-form input:focus {
-  outline: none;
-  border-color: #1a1a1a;
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
-}
-
-.add-cycle-form button {
-  background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
-  color: white;
-  border: none;
-  padding: 1.2rem;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.add-cycle-form button:hover {
-  background: linear-gradient(135deg, #333 0%, #555 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* FOOTER */
@@ -309,11 +264,6 @@
   .cycle-list {
     grid-template-columns: 1fr;
     padding: 2rem 1rem;
-  }
-
-  .add-cycle-form {
-    margin: 1rem;
-    padding: 2rem;
   }
 
   .header {

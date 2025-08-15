@@ -7,6 +7,7 @@ import {
   FaRegStar,
   FaUser,
 } from "react-icons/fa";
+import Footer from "../components/Footer";
 import "./CycleDetail.css";
 import cycles from "../cyclesData";
 
@@ -190,6 +191,7 @@ function CycleDetail() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

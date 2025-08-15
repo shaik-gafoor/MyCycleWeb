@@ -1,9 +1,9 @@
 import React from "react";
 import "./CycleCard.css";
 import { useNavigate } from "react-router-dom";
-import { FaEye, FaTrash } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 
-function CycleCard({ cycle, onRemove }) {
+function CycleCard({ cycle }) {
   const navigate = useNavigate();
   return (
     <div className="cycle-card">
@@ -19,15 +19,6 @@ function CycleCard({ cycle, onRemove }) {
             onClick={() => navigate(`/cycle/${cycle.id}`)}
           >
             <FaEye /> View Details
-          </button>
-          <button
-            className="cycle-card-btn btn-danger"
-            onClick={(e) => {
-              e.stopPropagation();
-              onRemove(cycle.id);
-            }}
-          >
-            <FaTrash /> Remove
           </button>
         </div>
       </div>

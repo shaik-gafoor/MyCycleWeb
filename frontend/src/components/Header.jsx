@@ -1,85 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaHome,
   FaBicycle,
-  FaPlus,
-  FaCog,
   FaInfoCircle,
-  FaUser,
+  FaSun,
+  FaMoon,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
+import { useTheme } from "../contexts/ThemeContext";
 import "./Header.css";
 
-function Header({ user, showUserMenu, setShowUserMenu, onLogout }) {
+function Header() {
+  const { isDarkMode, toggleDarkMode } = useTheme();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
-    <header className="header">
-      <nav>
-        <ul className="nav-list">
-          <li>
-            <Link to="/">
-              <FaHome className="nav-icon" />
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/cycles">
-              <FaBicycle className="nav-icon" />
-              Cycle
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="#addcycle"
-              onClick={() => {
-                const el = document.querySelector(".add-cycle-form");
-                if (el) el.scrollIntoView({ behavior: "smooth" });
-              }}
-            >
-              <FaPlus className="nav-icon" />
-              Add Cycle
-            </Link>
-          </li>
-          <li>
-            <Link to="/settings">
-              <FaCog className="nav-icon" />
-              Setting
-            </Link>
-          </li>
-          <li>
-            <Link to="/about">
-              <FaInfoCircle className="nav-icon" />
-              About
-            </Link>
-          </li>
-        </ul>
-      </nav>
-      {user && (
-        <div className="user-menu-container">
-          <span
-            className="user-name"
-            onClick={() => setShowUserMenu((prev) => !prev)}
-            tabIndex={0}
-            style={{ cursor: "pointer" }}
-          >
-            <FaUser className="user-icon" />
-            {user.email.split("@")[0]}
-          </span>
-          {showUserMenu && (
-            <div className="user-menu-dropdown">
-              <button className="user-menu-btn" onClick={onLogout}>
-                Logout
-              </button>
-              <Link
-                to="/settings"
-                className="user-menu-btn"
-                onClick={() => setShowUserMenu(false)}
-              >
-                Settings
-              </Link>
-            </div>
-          )}
+    <header className={`header ${isDarkMode ? "dark" : "light"}`}>
+      <div className="header-container">
+        <div className="logo">
+          <Link to="/" className="logo-link">
+            <FaBicycle className="logo-icon" />
+            <span className="logo-text">CycleSport</span>
+          </Link>
         </div>
-      )}
+
+        <nav className={`nav ${isMobileMenuOpen ? "nav-open" : ""}`}>
+          <ul className="nav-list">
+            <li>
+              <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
+                <FaHome className="nav-icon" />
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/cycles" onClick={() => setIsMobileMenuOpen(false)}>
+                <FaBicycle className="nav-icon" />
+                Cycles
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>
+                <FaInfoCircle className="nav-icon" />
+                About Us
+              </Link>
+            </li>
+          </ul>
+        </nav>
+
+        <div className="header-actions">
+          <button
+            className="theme-toggle"
+            onClick={toggleDarkMode}
+            aria-label="Toggle theme"
+          >
+            {isDarkMode ? <FaSun /> : <FaMoon />}
+          </button>
+
+          <button
+            className="mobile-menu-toggle"
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
+        </div>
+      </div>
     </header>
   );
 }
