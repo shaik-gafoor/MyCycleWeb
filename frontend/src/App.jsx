@@ -7,7 +7,6 @@ import About from "./pages/About";
 import Settings from "./pages/Settings";
 import CycleList from "./components/CycleList";
 import CycleDetail from "./pages/CycleDetail";
-import cycles from "./cyclesData";
 import "./App.css";
 
 function App() {
@@ -18,7 +17,7 @@ function App() {
         <div className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/cycles" element={<CycleList cycles={cycles} />} />
+            <Route path="/cycles" element={<CycleList />} />
             <Route path="/cycle/:id" element={<CycleDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />

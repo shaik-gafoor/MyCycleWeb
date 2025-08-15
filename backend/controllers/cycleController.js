@@ -37,6 +37,44 @@ const getAllCycles = async (req, res) => {
   }
 };
 
+// Get Single Cycle by ID
+const getCycleById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const cycle = await Cycle.findById(id).select("-__v -createdAt -updatedAt");
+
+    if (!cycle) {
+      return res.status(404).json({
+        success: false,
+        message: "Cycle not found",
+      });
+    }
+
+    // Return response with id instead of _id
+    const responseData = {
+      id: cycle._id,
+      imageUrl: cycle.imageUrl,
+      title: cycle.title,
+      description: cycle.description,
+      cost: cycle.cost,
+    };
+
+    res.status(200).json(responseData);
+  } catch (error) {
+    console.error("Error getting cycle by ID:", error);
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid cycle ID format",
+      });
+    }
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve cycle",
+    });
+  }
+};
+
 // Create Cycle
 const createCycle = async (req, res) => {
   try {
@@ -177,6 +215,7 @@ const deleteCycle = async (req, res) => {
 
 module.exports = {
   getAllCycles,
+  getCycleById,
   createCycle,
   updateCycle,
   deleteCycle,

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   getAllCycles,
+  getCycleById,
   createCycle,
   updateCycle,
   deleteCycle,
@@ -9,6 +10,9 @@ const {
 
 // GET /api/cycles - Get all cycles
 router.get("/", getAllCycles);
+
+// GET /api/cycles/:id - Get a single cycle by ID
+router.get("/:id", getCycleById);
 
 // POST /api/cycles - Create a new cycle
 router.post("/", createCycle);
