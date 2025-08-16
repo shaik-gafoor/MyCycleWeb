@@ -27,6 +27,20 @@ app.use(
 );
 app.use(express.json());
 
+// Debug middleware - Log all requests
+app.use((req, res, next) => {
+  console.log("\n=== INCOMING REQUEST ===");
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log("Headers:", req.headers);
+  console.log("Params:", req.params);
+  console.log("Query:", req.query);
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log("Body:", req.body);
+  }
+  console.log("========================\n");
+  next();
+});
+
 // Routes
 app.use("/api/cycles", cycleRoutes);
 
