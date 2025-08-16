@@ -28,10 +28,7 @@ router.get("/:id", getCycleById);
 // POST /api/cycles - Create a new cycle
 router.post("/", createCycle);
 
-// PUT /api/cycles/:id - Update a cycle by ID
-router.put("/:id", updateCycle);
-
-// Test route to verify PUT is working
+// Test route to verify PUT is working (MUST be before the main PUT route)
 router.put("/test/:id", (req, res) => {
   res.json({
     message: "PUT route is working",
@@ -39,6 +36,9 @@ router.put("/test/:id", (req, res) => {
     body: req.body,
   });
 });
+
+// PUT /api/cycles/:id - Update a cycle by ID
+router.put("/:id", updateCycle);
 
 // DELETE /api/cycles/:id - Delete a cycle by ID
 router.delete("/:id", deleteCycle);
