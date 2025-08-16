@@ -20,9 +20,9 @@ const ViewCycles = ({ cycles, loading }) => {
             <p className="text-gray-500 text-lg">No cycles found.</p>
           </div>
         ) : (
-          cycles.map((cycle) => (
+          cycles.map((cycle, idx) => (
             <div
-              key={cycle.id}
+              key={cycle.id || idx}
               className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
             >
               <img
@@ -30,8 +30,10 @@ const ViewCycles = ({ cycles, loading }) => {
                 alt={cycle.title}
                 className="w-full h-48 object-cover"
                 onError={(e) => {
-                  e.target.src =
-                    "https://via.placeholder.com/400x300?text=Image+Not+Found";
+                  if (e.target.src !== "/no-image.png") {
+                    e.target.onerror = null; // Prevent infinite loop
+                    e.target.src = "/no-image.png"; // Use a local fallback image
+                  }
                 }}
               />
               <div className="p-4">

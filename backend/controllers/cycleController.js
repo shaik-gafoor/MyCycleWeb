@@ -1,24 +1,41 @@
 const Cycle = require("../models/Cycle");
-const {
-  convertGoogleDriveUrl,
-  validateCycleData,
-} = require("../utils/helpers");
+
+// Validation helper function
+const validateCycleData = (data) => {
+  const errors = [];
+
+  if (!data.imageUrl || typeof data.imageUrl !== "string") {
+    errors.push("imageUrl is required and must be a string");
+  }
+
+  if (!data.title || typeof data.title !== "string") {
+    errors.push("title is required and must be a string");
+  }
+
+  if (!data.description || typeof data.description !== "string") {
+    errors.push("description is required and must be a string");
+  }
+
+  if (!data.cost || typeof data.cost !== "number" || data.cost <= 0) {
+    errors.push("cost is required and must be a positive number");
+  }
+
+  return errors;
+};
 
 // Get All Cycles
 const getAllCycles = async (req, res) => {
   try {
     const cycles = await Cycle.find().select("-__v -createdAt -updatedAt");
-
-    // Convert the response to include 'id' field and process image URLs
-    const processedCycles = cycles.map((cycle) => ({
+    // Map _id to id for each cycle
+    const formattedCycles = cycles.map((cycle) => ({
       id: cycle._id,
-      imageUrl: convertGoogleDriveUrl(cycle.imageUrl),
+      imageUrl: cycle.imageUrl,
       title: cycle.title,
       description: cycle.description,
       cost: cycle.cost,
     }));
-
-    res.status(200).json(processedCycles);
+    res.status(200).json(formattedCycles);
   } catch (error) {
     console.error("Error getting all cycles:", error);
     res.status(500).json({
@@ -81,14 +98,11 @@ const createCycle = async (req, res) => {
       });
     }
 
-    // Convert Google Drive URL to direct image URL
-    const processedImageUrl = convertGoogleDriveUrl(imageUrl);
-
     // Create new cycle
     const newCycle = new Cycle({
-      imageUrl: processedImageUrl,
-      title: title.trim(),
-      description: description.trim(),
+      imageUrl,
+      title,
+      description,
       cost: Number(cost),
     });
 
@@ -107,17 +121,6 @@ const createCycle = async (req, res) => {
     res.status(201).json(responseData);
   } catch (error) {
     console.error("Error creating cycle:", error);
-
-    // Handle mongoose validation errors
-    if (error.name === "ValidationError") {
-      const errors = Object.values(error.errors).map((err) => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        errors: errors,
-      });
-    }
-
     res.status(500).json({
       success: false,
       message: "Failed to create cycle",
@@ -131,30 +134,6 @@ const updateCycle = async (req, res) => {
     const { id } = req.params;
     const { imageUrl, title, description, cost } = req.body;
 
-    console.log("Full request params:", req.params);
-    console.log("Update request for ID:", id);
-    console.log("Update data:", { imageUrl, title, description, cost });
-
-    // Check if ID is provided and valid
-    if (!id || id === "undefined" || id === "null") {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Cycle ID is required in the URL. Please use format: PUT /api/cycles/{id}",
-        receivedId: id,
-      });
-    }
-
-    // Check if ID is a valid MongoDB ObjectId format (24 hex characters)
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid cycle ID format. Must be a valid MongoDB ObjectId (24 hex characters)",
-        receivedId: id,
-      });
-    }
-
     // Validate input data
     const validationErrors = validateCycleData(req.body);
     if (validationErrors.length > 0) {
@@ -165,34 +144,24 @@ const updateCycle = async (req, res) => {
       });
     }
 
-    // Convert Google Drive URL to direct image URL
-    const processedImageUrl = convertGoogleDriveUrl(imageUrl);
-
     // Update cycle in MongoDB
     const updatedCycle = await Cycle.findByIdAndUpdate(
       id,
       {
-        imageUrl: processedImageUrl,
-        title: title.trim(),
-        description: description.trim(),
+        imageUrl,
+        title,
+        description,
         cost: Number(cost),
       },
-      {
-        new: true,
-        runValidators: true,
-        select: "-__v -createdAt -updatedAt",
-      }
+      { new: true, runValidators: true }
     );
 
     if (!updatedCycle) {
       return res.status(404).json({
         success: false,
-        message: "Cycle not found with the provided ID",
-        providedId: id,
+        message: "Cycle not found",
       });
     }
-
-    console.log("Successfully updated cycle:", updatedCycle);
 
     // Return response with id instead of _id
     const responseData = {
@@ -206,30 +175,15 @@ const updateCycle = async (req, res) => {
     res.status(200).json(responseData);
   } catch (error) {
     console.error("Error updating cycle:", error);
-
     if (error.name === "CastError") {
       return res.status(400).json({
         success: false,
         message: "Invalid cycle ID format",
-        error: error.message,
-        receivedId: req.params.id,
       });
     }
-
-    // Handle mongoose validation errors
-    if (error.name === "ValidationError") {
-      const errors = Object.values(error.errors).map((err) => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        errors: errors,
-      });
-    }
-
     res.status(500).json({
       success: false,
       message: "Failed to update cycle",
-      error: error.message,
     });
   }
 };

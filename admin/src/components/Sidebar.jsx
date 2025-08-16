@@ -1,7 +1,7 @@
 import React from "react";
 import { Eye, Settings, Plus } from "lucide-react";
 
-const Sidebar = ({ activeTab, setActiveTab }) => {
+const Sidebar = ({ activeTab, setActiveTab, onSelect }) => {
   const navItems = [
     { id: "view", icon: Eye, label: "View Cycles" },
     { id: "manage", icon: Settings, label: "Update/Delete" },
@@ -26,7 +26,10 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                   ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
-              onClick={() => setActiveTab(id)}
+              onClick={() => {
+                setActiveTab(id);
+                if (onSelect) onSelect();
+              }}
             >
               <Icon className="h-5 w-5" />
               {label}

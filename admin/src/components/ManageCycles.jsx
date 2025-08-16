@@ -27,13 +27,17 @@ const ManageCycles = ({ cycles, loading, onUpdate, onDelete }) => {
   };
 
   const handleEditSave = async (id) => {
+    if (!id) {
+      console.warn("Attempted to update cycle with undefined id");
+      alert("Error: Cycle ID is missing. Please refresh the page.");
+      return;
+    }
     const success = await onUpdate(id, {
       imageUrl: editForm.imageUrl,
       title: editForm.title,
       description: editForm.description,
       cost: Number(editForm.cost),
     });
-
     if (success) {
       setEditId(null);
     }
@@ -44,6 +48,11 @@ const ManageCycles = ({ cycles, loading, onUpdate, onDelete }) => {
   };
 
   const handleDelete = async (id) => {
+    if (!id) {
+      console.warn("Attempted to delete cycle with undefined id");
+      alert("Error: Cycle ID is missing. Please refresh the page.");
+      return;
+    }
     if (window.confirm("Are you sure you want to delete this cycle?")) {
       await onDelete(id);
     }
@@ -66,9 +75,9 @@ const ManageCycles = ({ cycles, loading, onUpdate, onDelete }) => {
             <p className="text-gray-500 text-lg">No cycles found to manage.</p>
           </div>
         ) : (
-          cycles.map((cycle) => (
+          cycles.map((cycle, idx) => (
             <div
-              key={cycle.id}
+              key={cycle.id || idx}
               className="bg-white rounded-lg shadow-md p-6 border border-gray-200"
             >
               {editId === cycle.id ? (
@@ -154,8 +163,10 @@ const ManageCycles = ({ cycles, loading, onUpdate, onDelete }) => {
                     alt={cycle.title}
                     className="w-24 h-24 object-cover rounded-lg border border-gray-200"
                     onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/96x96?text=No+Image";
+                      if (e.target.src !== "/no-image.png") {
+                        e.target.onerror = null; // Prevent infinite loop
+                        e.target.src = "/no-image.png"; // Use a local fallback image
+                      }
                     }}
                   />
                   <div className="flex-1">
