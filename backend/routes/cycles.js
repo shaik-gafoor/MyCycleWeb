@@ -32,9 +32,9 @@ router.post("/", createCycle);
 router.put("/:id", updateCycle);
 
 // Test route to verify PUT is working
-router.put("/test/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   res.json({
-    message: "PUT route is working",
+    message: "Cycle data updated",
     id: req.params.id,
     body: req.body,
   });
